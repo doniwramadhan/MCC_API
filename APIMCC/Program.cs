@@ -1,3 +1,6 @@
+using APIMCC.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace APIMCC
 {
     public class Program
@@ -7,6 +10,10 @@ namespace APIMCC
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            //Add DbContext to container.
+            var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<BookingDbContext>(option => option.UseSqlServer(connection));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,16 +1,39 @@
-﻿namespace APIMCC.Models
+﻿using APIMCC.Utilities.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace APIMCC.Models
 {
-    public class Employee : Date
+    [Table("tb_m_employees")]
+    public class Employee : BaseProp
     {
-        public Guid Guid { get; set; }
+        [Column("nik",TypeName ="nchar(6)")]
         public string NIK { get; set; }
+        
+        [Column("first_name", TypeName ="nvarchar(100)")]
         public string FirstName { get; set; }
+
+        [Column("last_name", TypeName ="nvarchar(100)")]
         public string? LastName { get; set; }
+
+        [Column("birth_date")]
         public DateTime BirthDate { get; set; }
-        public int Gender { get; set; }
+
+        [Column("gender")]
+        public GenderLevel Gender { get; set; }
+
+        [Column("hire_date")]
         public DateTime HireDare { get; set; }
+
+        [Column("email", TypeName ="nvarchar(100)")]
         public string Email { get; set; }
+
+        [Column("phone_number", TypeName ="nvarchar(20)")]
         public string PhoneNumber { get; set; }
+
+        //Cardinalities
+        public ICollection<Booking>? Bookings { get; set; }
+        public Account? Account { get; set; }
+        public Education? Education { get; set; }
 
     }
 }

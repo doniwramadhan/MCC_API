@@ -1,8 +1,14 @@
-﻿namespace APIMCC.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace APIMCC.Models
 {
-    public class Role : Date
+    [Table("tb_m_roles")]
+    public class Role : BaseProp
     {
-        public Guid Guid { get; set; }
+        [Column("name", TypeName ="nvarchar(100)")]
         public string Name { get; set; }
+
+        //Cardinalities
+        public ICollection<AccountRole>? AccountRoles { get; set; }
     }
 }
