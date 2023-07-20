@@ -5,32 +5,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIMCC.Repositories
 {
-    public class UniversityRepository : IUniversityRepository
+    public class EducationRepository : IEducationRepository
     {
         private readonly BookingDbContext _context;
 
-        public UniversityRepository(BookingDbContext context)
+        public EducationRepository(BookingDbContext context)
         {
             _context = context;
         }
 
         //Method CRUD
-        public IEnumerable<University> GetAll()
+        public IEnumerable<Education> GetAll()
         {
-            return _context.Set<University>().ToList();     //Untuk cari semua data
+            return _context.Set<Education>().ToList();     //Untuk cari semua data
         }
 
-        public University? GetByGuid(Guid guid)
+        public Education? GetByGuid(Guid guid)
         {
-            return _context.Set<University>().Find(guid);   //Untuk cari data berdasarkan guid
+            return _context.Set<Education>().Find(guid);   //Untuk cari data berdasarkan guid
         }
-        public University? Create(University university)
+        public Education? Create(Education education)
         {
             try
             {
-                _context.Set<University>().Add(university);   //Untuk memasukan data
+                _context.Set<Education>().Add(education);   //Untuk memasukan data
                 _context.SaveChanges();                       //Untuk execute
-                return university;
+                return education;
 
             }
             catch
@@ -39,11 +39,11 @@ namespace APIMCC.Repositories
             }
         }
 
-        public bool Update(University university)
+        public bool Update(Education education)
         {
             try
             {
-                _context.Entry(university).State = EntityState.Modified;    //Untuk update data
+                _context.Entry(education).State = EntityState.Modified;    //Untuk update data
                 _context.SaveChanges();                                     //Untuk execute 
                 return true;
             }
@@ -52,11 +52,11 @@ namespace APIMCC.Repositories
                 return false;
             }
         }
-        public bool Delete(University university)
+        public bool Delete(Education education)
         {
             try
             {
-                _context.Set<University>().Remove(university);              //Untuk remove atau delete data
+                _context.Set<Education>().Remove(education);              //Untuk remove atau delete data
                 _context.SaveChanges();                                     //Untuk execute
                 return true;
             }
@@ -64,6 +64,6 @@ namespace APIMCC.Repositories
             {
                 return false;
             }
-        }  
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace APIMCC
 
             //Add Repositories to container
             builder.Services.AddScoped<IUniversityRepository, UniversityRepository>();
+            builder.Services.AddScoped<IEducationRepository, EducationRepository>();
 
             
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
