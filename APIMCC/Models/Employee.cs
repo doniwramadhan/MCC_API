@@ -22,7 +22,7 @@ namespace APIMCC.Models
         public GenderLevel Gender { get; set; }
 
         [Column("hire_date")]
-        public DateTime HireDare { get; set; }
+        public DateTime HireDate { get; set; }
 
         [Column("email", TypeName ="nvarchar(100)")]
         public string Email { get; set; }
