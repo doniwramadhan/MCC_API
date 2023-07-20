@@ -5,20 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIMCC.Controllers
 {
-    [Route("api/educations")]
+    [Route("api/account-roles")]
     [ApiController]
-    public class EducationController : ControllerBase
+    public class AccountRoleController : ControllerBase
     {
-        private readonly IEducationRepository _educationRepository;
-        public EducationController(IEducationRepository educationRepository)
+        private readonly IAccountRoleRepository _accountRoleRepository;
+        public AccountRoleController(IAccountRoleRepository accountRoleRepository)
         {
-            _educationRepository = educationRepository;
+            _accountRoleRepository = accountRoleRepository;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var result = _educationRepository.GetAll();
+            var result = _accountRoleRepository.GetAll();
             if (result is null)
             {
                 return NotFound();
@@ -32,7 +32,7 @@ namespace APIMCC.Controllers
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
-            var result = _educationRepository.GetByGuid(guid);
+            var result = _accountRoleRepository.GetByGuid(guid);
             if (result is null)
             {
                 return NotFound();
@@ -44,9 +44,9 @@ namespace APIMCC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Insert(Education education)
+        public IActionResult Insert(AccountRole accountRole)
         {
-            var result = _educationRepository.Create(education);
+            var result = _accountRoleRepository.Create(accountRole);
             if (result is null)
             {
                 return StatusCode(500, "Error from database");
@@ -58,15 +58,15 @@ namespace APIMCC.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(Education Education)
+        public IActionResult Update(AccountRole accountRole)
         {
-            var check = _educationRepository.GetByGuid(Education.Guid);
+            var check = _accountRoleRepository.GetByGuid(accountRole.Guid);
             if (check is null)
             {
                 return NotFound("Guid is not found");
             }
 
-            var result = _educationRepository.Update(Education);
+            var result = _accountRoleRepository.Update(accountRole);
             if (!result)
             {
                 return StatusCode(500, "Error Retrieve from database");
@@ -78,13 +78,13 @@ namespace APIMCC.Controllers
         [HttpDelete]
         public IActionResult Delete(Guid guid)
         {
-            var data = _educationRepository.GetByGuid(guid);
+            var data = _accountRoleRepository.GetByGuid(guid);
             if (data is null)
             {
                 return NotFound("Guid is not found");
             }
 
-            var result = _educationRepository.Delete(data);
+            var result = _accountRoleRepository.Delete(data);
             if (!result)
             {
                 return StatusCode(500, "Error from database");
