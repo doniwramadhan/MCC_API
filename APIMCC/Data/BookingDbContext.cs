@@ -31,15 +31,15 @@ namespace APIMCC.Data
             }).IsUnique();
 
             // N : 1
-            modelBuilder.Entity<University>()
-                .HasMany(u => u.Educations)
-                .WithOne(e => e.University)
+            modelBuilder.Entity<Education>()
+                .HasOne(e => e.University)
+                .WithMany(u => u.Educations)
                 .HasForeignKey(e => e.UniversityGuid);
 
             // N : 1
-            modelBuilder.Entity<Employee>()
-                .HasMany(e => e.Bookings)
-                .WithOne(b => b.Employee)
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Employee)
+                .WithMany(e => e.Bookings)
                 .HasForeignKey(e => e.EmployeeGuid);
 
             // 1 : N
@@ -70,7 +70,7 @@ namespace APIMCC.Data
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Education)
                 .WithOne(ed => ed.Employee)
-                .HasForeignKey<Employee>(e => e.Guid);
+                .HasForeignKey<Education>(ed => ed.Guid);
 
 
         }
