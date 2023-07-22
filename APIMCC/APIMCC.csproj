@@ -23,7 +23,6 @@
     <Folder Include="DTOs\Accounts\" />
     <Folder Include="DTOs\AccountRoles\" />
     <Folder Include="DTOs\Roles\" />
-    <Folder Include="DTOs\Rooms\" />
   </ItemGroup>
 
 </Project>
