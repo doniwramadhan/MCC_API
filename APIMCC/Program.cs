@@ -1,6 +1,7 @@
 using APIMCC.Contracts;
 using APIMCC.Data;
 using APIMCC.Repositories;
+using APIMCC.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIMCC
@@ -28,7 +29,10 @@ namespace APIMCC
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 
-            
+            // Add services to the container.
+            builder.Services.AddScoped<UniversityService>();
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
