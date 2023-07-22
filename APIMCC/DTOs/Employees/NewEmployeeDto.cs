@@ -5,7 +5,6 @@ namespace APIMCC.DTOs.Employees
 {
     public class NewEmployeeDto
     {
-        public Guid Guid { get; set; }
         public string NIK { get; set; }
         public string FirstName { get; set; }
         public string? LastName { get; set; }
