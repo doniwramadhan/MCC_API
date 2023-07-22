@@ -17,12 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Educations\" />
     <Folder Include="DTOs\Bookings\" />
-    <Folder Include="DTOs\Employees\" />
     <Folder Include="DTOs\Accounts\" />
     <Folder Include="DTOs\AccountRoles\" />
-    <Folder Include="DTOs\Roles\" />
   </ItemGroup>
 
 </Project>

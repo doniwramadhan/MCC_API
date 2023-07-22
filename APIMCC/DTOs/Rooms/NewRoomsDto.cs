@@ -1,5 +1,4 @@
-﻿using APIMCC.DTOs.Universities;
-using APIMCC.Models;
+﻿using APIMCC.Models;
 
 namespace APIMCC.DTOs.Rooms
 {

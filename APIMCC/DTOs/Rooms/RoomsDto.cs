@@ -14,7 +14,7 @@ namespace APIMCC.DTOs.Rooms
         {
             return new Room
             {
-                Guid = new Guid(),
+                Guid = roomsDto.Guid,
                 Name = roomsDto.Name,
                 Floor = roomsDto.Floor,
                 Capacity = roomsDto.Capacity,
