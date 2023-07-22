@@ -1,5 +1,8 @@
 ﻿using APIMCC.Contracts;
+using APIMCC.DTOs.Educations;
+using APIMCC.DTOs.Employees;
 using APIMCC.Models;
+using APIMCC.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,16 +12,17 @@ namespace APIMCC.Controllers
     [ApiController]
     public class EducationController : ControllerBase
     {
-        private readonly IEducationRepository _educationRepository;
-        public EducationController(IEducationRepository educationRepository)
+        private readonly EducationService _educationService;
+
+        public EducationController(EducationService educationService)
         {
-            _educationRepository = educationRepository;
+            _educationService = educationService;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var result = _educationRepository.GetAll();
+            var result = _educationService.GetAll();
             if (result is null)
             {
                 return NotFound();
@@ -32,7 +36,7 @@ namespace APIMCC.Controllers
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
-            var result = _educationRepository.GetByGuid(guid);
+            var result = _educationService.GetByGuid(guid);
             if (result is null)
             {
                 return NotFound();
@@ -44,9 +48,9 @@ namespace APIMCC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Insert(Education education)
+        public IActionResult Insert(NewEducationDto newEducationDto)
         {
-            var result = _educationRepository.Create(education);
+            var result = _educationService.Create(newEducationDto);
             if (result is null)
             {
                 return StatusCode(500, "Error from database");
@@ -58,16 +62,14 @@ namespace APIMCC.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(Education Education)
+        public IActionResult Update(EducationDto educationDto)
         {
-            var check = _educationRepository.GetByGuid(Education.Guid);
-            if (check is null)
+            var result = _educationService.Update(educationDto);
+            if (result is 0)
             {
-                return NotFound("Guid is not found");
+                return NotFound();
             }
-
-            var result = _educationRepository.Update(Education);
-            if (!result)
+            if (result is -1)
             {
                 return StatusCode(500, "Error Retrieve from database");
             }
@@ -78,16 +80,14 @@ namespace APIMCC.Controllers
         [HttpDelete]
         public IActionResult Delete(Guid guid)
         {
-            var data = _educationRepository.GetByGuid(guid);
-            if (data is null)
+            var result = _educationService.Delete(guid);
+            if (result is 0)
             {
-                return NotFound("Guid is not found");
+                return NotFound();
             }
-
-            var result = _educationRepository.Delete(data);
-            if (!result)
+            if (result is -1)
             {
-                return StatusCode(500, "Error from database");
+                return StatusCode(500, "Error Retrieve from database");
             }
 
             return Ok("Delete succes");
