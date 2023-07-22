@@ -16,6 +16,7 @@ namespace APIMCC.DTOs.Accounts
                 OTP = newAccountDto.OTP,
                 IsUsed = newAccountDto.IsUsed,
                 ExpiredDate = newAccountDto.ExpiredDate,
+                CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
             };
         }

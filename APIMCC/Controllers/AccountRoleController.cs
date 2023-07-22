@@ -1,5 +1,8 @@
 ﻿using APIMCC.Contracts;
+using APIMCC.DTOs.AccountRoles;
+using APIMCC.DTOs.Universities;
 using APIMCC.Models;
+using APIMCC.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,16 +12,17 @@ namespace APIMCC.Controllers
     [ApiController]
     public class AccountRoleController : ControllerBase
     {
-        private readonly IAccountRoleRepository _accountRoleRepository;
-        public AccountRoleController(IAccountRoleRepository accountRoleRepository)
+        private readonly AccountRoleService _accountRoleService;
+
+        public AccountRoleController(AccountRoleService accountRoleService)
         {
-            _accountRoleRepository = accountRoleRepository;
+            _accountRoleService = accountRoleService;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var result = _accountRoleRepository.GetAll();
+            var result = _accountRoleService.GetAll();
             if (result is null)
             {
                 return NotFound();
@@ -32,7 +36,7 @@ namespace APIMCC.Controllers
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
-            var result = _accountRoleRepository.GetByGuid(guid);
+            var result = _accountRoleService.GetByGuid(guid);
             if (result is null)
             {
                 return NotFound();
@@ -44,9 +48,9 @@ namespace APIMCC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Insert(AccountRole accountRole)
+        public IActionResult Insert(NewAccountRoleDto newAccountRoleDto)
         {
-            var result = _accountRoleRepository.Create(accountRole);
+            var result = _accountRoleService.Create(newAccountRoleDto);
             if (result is null)
             {
                 return StatusCode(500, "Error from database");
@@ -58,16 +62,14 @@ namespace APIMCC.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(AccountRole accountRole)
+        public IActionResult Update(AccountRoleDto accountRoleDto)
         {
-            var check = _accountRoleRepository.GetByGuid(accountRole.Guid);
-            if (check is null)
+            var result = _accountRoleService.Update(accountRoleDto);
+            if (result is 0)
             {
-                return NotFound("Guid is not found");
+                return NotFound();
             }
-
-            var result = _accountRoleRepository.Update(accountRole);
-            if (!result)
+            if (result is -1)
             {
                 return StatusCode(500, "Error Retrieve from database");
             }
@@ -78,16 +80,14 @@ namespace APIMCC.Controllers
         [HttpDelete]
         public IActionResult Delete(Guid guid)
         {
-            var data = _accountRoleRepository.GetByGuid(guid);
-            if (data is null)
+            var result = _accountRoleService.Delete(guid);
+            if (result is 0)
             {
-                return NotFound("Guid is not found");
+                return NotFound();
             }
-
-            var result = _accountRoleRepository.Delete(data);
-            if (!result)
+            if (result is -1)
             {
-                return StatusCode(500, "Error from database");
+                return StatusCode(500, "Error Retrieve from database");
             }
 
             return Ok("Delete succes");
