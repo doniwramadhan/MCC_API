@@ -36,6 +36,7 @@ namespace APIMCC
             builder.Services.AddScoped<EmployeeService>();
             builder.Services.AddScoped<EducationService>();
             builder.Services.AddScoped<BookingService>();
+            builder.Services.AddScoped<AccountService>();
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

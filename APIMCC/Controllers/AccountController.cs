@@ -1,5 +1,8 @@
 ﻿using APIMCC.Contracts;
+using APIMCC.DTOs.Accounts;
+using APIMCC.DTOs.Universities;
 using APIMCC.Models;
+using APIMCC.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,16 +12,17 @@ namespace APIMCC.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountRepository _accountRepository;
-        public AccountController(IAccountRepository accountRepository)
+        private readonly AccountService _accountService;
+
+        public AccountController(AccountService accountService)
         {
-            _accountRepository = accountRepository;
+            _accountService = accountService;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var result = _accountRepository.GetAll();
+            var result = _accountService.GetAll();
             if (result is null)
             {
                 return NotFound();
@@ -32,7 +36,7 @@ namespace APIMCC.Controllers
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)
         {
-            var result = _accountRepository.GetByGuid(guid);
+            var result = _accountService.GetByGuid(guid);
             if (result is null)
             {
                 return NotFound();
@@ -44,9 +48,9 @@ namespace APIMCC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Insert(Account account)
+        public IActionResult Insert(NewAccountDto newAccountDto)
         {
-            var result = _accountRepository.Create(account);
+            var result = _accountService.Create(newAccountDto);
             if (result is null)
             {
                 return StatusCode(500, "Error from database");
@@ -58,16 +62,14 @@ namespace APIMCC.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update(Account account)
+        public IActionResult Update(AccountDto accountDto)
         {
-            var check = _accountRepository.GetByGuid(account.Guid);
-            if (check is null)
+            var result = _accountService.Update(accountDto);
+            if (result is 0)
             {
-                return NotFound("Guid is not found");
+                return NotFound();
             }
-
-            var result = _accountRepository.Update(account);
-            if (!result)
+            if (result is -1)
             {
                 return StatusCode(500, "Error Retrieve from database");
             }
@@ -78,16 +80,14 @@ namespace APIMCC.Controllers
         [HttpDelete]
         public IActionResult Delete(Guid guid)
         {
-            var data = _accountRepository.GetByGuid(guid);
-            if (data is null)
+            var result = _accountService.Delete(guid);
+            if (result is 0)
             {
-                return NotFound("Guid is not found");
+                return NotFound();
             }
-
-            var result = _accountRepository.Delete(data);
-            if (!result)
+            if (result is -1)
             {
-                return StatusCode(500, "Error from database");
+                return StatusCode(500, "Error Retrieve from database");
             }
 
             return Ok("Delete succes");
