@@ -5,6 +5,8 @@ namespace APIMCC.DTOs.Bookings
 {
     public class NewBookingDto
     {
+        public Guid RoomGuid { get; set; }
+        public Guid EmployeeGuid { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public StatusLevel Status { get; set; }
@@ -15,6 +17,8 @@ namespace APIMCC.DTOs.Bookings
             return new Booking
             {
                 Guid = new Guid(),
+                RoomGuid = newBookingDto.RoomGuid,
+                EmployeeGuid = newBookingDto.EmployeeGuid,
                 StartDate = newBookingDto.StartDate,
                 EndDate = newBookingDto.EndDate,
                 Status = newBookingDto.Status,
@@ -28,6 +32,8 @@ namespace APIMCC.DTOs.Bookings
         {
             return new NewBookingDto
             {
+                RoomGuid = booking.RoomGuid,
+                EmployeeGuid = booking.EmployeeGuid,
                 StartDate = booking.StartDate,
                 EndDate = booking.EndDate,
                 Status = booking.Status,
