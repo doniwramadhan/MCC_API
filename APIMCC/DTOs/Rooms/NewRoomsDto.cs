@@ -20,16 +20,5 @@ namespace APIMCC.DTOs.Rooms
                 ModifiedDate = DateTime.Now
             };
         }
-
-        public static explicit operator NewRoomsDto(Room room)
-        {
-            return new NewRoomsDto
-            {
-                
-                Name = room.Name,
-                Floor = room.Floor,
-                Capacity = room.Capacity,
-            };
-        }
     }
 }

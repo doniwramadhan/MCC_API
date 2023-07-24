@@ -27,18 +27,5 @@ namespace APIMCC.DTOs.Bookings
                 ModifiedDate = DateTime.Now
             };
         }
-
-        public static explicit operator NewBookingDto(Booking booking)
-        {
-            return new NewBookingDto
-            {
-                RoomGuid = booking.RoomGuid,
-                EmployeeGuid = booking.EmployeeGuid,
-                StartDate = booking.StartDate,
-                EndDate = booking.EndDate,
-                Status = booking.Status,
-                Remarks = booking.Remarks
-            };
-        }
     }
 }

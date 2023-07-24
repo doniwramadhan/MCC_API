@@ -5,7 +5,6 @@ namespace APIMCC.DTOs.Employees
 {
     public class NewEmployeeDto
     {
-        public string NIK { get; set; }
         public string FirstName { get; set; }
         public string? LastName { get; set; }
         public DateTime BirthDate { get; set; }
@@ -19,7 +18,6 @@ namespace APIMCC.DTOs.Employees
             return new Employee
             {
                 Guid = new Guid(),
-                NIK = newEmployeeDto.NIK,
                 FirstName = newEmployeeDto.FirstName,
                 LastName = newEmployeeDto.LastName,
                 BirthDate = newEmployeeDto.BirthDate,
@@ -33,20 +31,5 @@ namespace APIMCC.DTOs.Employees
             };
         }
 
-        public static explicit operator NewEmployeeDto(Employee employee)
-        {
-            return new NewEmployeeDto
-            {
-                NIK = employee.NIK,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                BirthDate = employee.BirthDate,
-                Gender = employee.Gender,
-                Email = employee.Email,
-                PhoneNumber = employee.PhoneNumber,
-                HireDate = employee.HireDate
-
-            };
-        }
     }
 }

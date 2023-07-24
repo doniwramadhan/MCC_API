@@ -23,17 +23,5 @@ namespace APIMCC.DTOs.Accounts
                 ModifiedDate = DateTime.Now
             };
         }
-
-        public static explicit operator NewAccountDto(Account account)
-        {
-            return new NewAccountDto
-            {
-                Guid = account.Guid,
-                Password = account.Password,
-                OTP = account.OTP,
-                IsUsed = account.IsUsed,
-                ExpiredDate = account.ExpiredDate,
-            };
-        }
     }
 }

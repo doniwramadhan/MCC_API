@@ -20,13 +20,5 @@ namespace APIMCC.DTOs.Universities
             };
         }
 
-        public static explicit operator NewUniversityDto(University university)
-        {
-            return new NewUniversityDto
-            {
-                Code = university.Code,
-                Name = university.Name
-            };
-        }
     }
 }

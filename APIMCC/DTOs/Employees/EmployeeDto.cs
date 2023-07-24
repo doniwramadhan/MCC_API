@@ -15,9 +15,11 @@ namespace APIMCC.DTOs.Employees
         public string PhoneNumber { get; set; }
         public DateTime HireDate { get; set; }
 
+
+
         public static implicit operator Employee(EmployeeDto employeeDto)
         {
-            return new Employee 
+            return new Employee
             {
                 Guid = employeeDto.Guid,
                 NIK = employeeDto.NIK,
@@ -27,12 +29,10 @@ namespace APIMCC.DTOs.Employees
                 Gender = employeeDto.Gender,
                 Email = employeeDto.Email,
                 PhoneNumber = employeeDto.PhoneNumber,
-                HireDate = employeeDto.HireDate,
-                ModifiedDate = DateTime.Now
+                HireDate = employeeDto.HireDate
 
             };
         }
-
         public static explicit operator EmployeeDto(Employee employee)
         {
             return new EmployeeDto
@@ -48,7 +48,6 @@ namespace APIMCC.DTOs.Employees
                 HireDate = employee.HireDate
 
             };
-        }
-
+        }  
     }
 }

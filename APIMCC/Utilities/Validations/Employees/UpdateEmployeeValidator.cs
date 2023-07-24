@@ -1,24 +1,22 @@
 ﻿using APIMCC.Contracts;
 using APIMCC.DTOs.Employees;
-using APIMCC.Repositories;
 using FluentValidation;
-using Microsoft.IdentityModel.Tokens;
 
 namespace APIMCC.Utilities.Validations.Employees
 {
-    public class NewEmployeeValidator : AbstractValidator<NewEmployeeDto>
+    public class UpdateEmployeeValidator : AbstractValidator<EmployeeDto>
     {
         private readonly IEmployeeRepository _employeeRepository;
-        public NewEmployeeValidator(IEmployeeRepository employeeRepository)
+        public UpdateEmployeeValidator(IEmployeeRepository employeeRepository)
         {
             _employeeRepository = employeeRepository;
 
             RuleFor(e => e.FirstName).NotEmpty();
-            
+
             RuleFor(e => e.BirthDate)
                 .NotEmpty()
                 .LessThanOrEqualTo(DateTime.Now.AddYears(-10));
-            
+
             RuleFor(e => e.Gender)
                 .NotNull()
                 .IsInEnum();
@@ -36,11 +34,9 @@ namespace APIMCC.Utilities.Validations.Employees
                 .MaximumLength(20)
                 .Matches(@"^\+[0-9]+$").WithMessage("Format phone number using +62")
                 .Must(IsDuplicateValue).WithMessage("Phone number is already exist");
-                        
-           
         }
 
-        private bool IsDuplicateValue (string arg)
+        private bool IsDuplicateValue(string arg)
         {
             return _employeeRepository.IsNotExist(arg);
         }

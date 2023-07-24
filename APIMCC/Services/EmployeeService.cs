@@ -2,6 +2,7 @@
 using APIMCC.DTOs.Employees;
 using APIMCC.DTOs.Rooms;
 using APIMCC.Models;
+using APIMCC.Utilities.Handlers;
 
 namespace APIMCC.Services
 {
@@ -42,12 +43,15 @@ namespace APIMCC.Services
 
         public EmployeeDto? Create(NewEmployeeDto newEmployeeDto)
         {
-            var emp = _employeeRepository.Create(newEmployeeDto);
-            if (emp == null)
+            Employee toCreate = newEmployeeDto;
+            toCreate.NIK = GenerateNIK.Nik(_employeeRepository.GetLastNik());
+
+            var emp = _employeeRepository.Create(toCreate);
+            if (toCreate == null)
             {
                 return null;
             }
-            return (EmployeeDto)emp;
+            return (EmployeeDto) toCreate;
         }
 
         public int Update(EmployeeDto employeeDto)

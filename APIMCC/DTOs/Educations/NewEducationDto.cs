@@ -23,17 +23,5 @@ namespace APIMCC.DTOs.Educations
                 ModifiedDate = DateTime.Now
             };
         }
-
-        public static explicit operator NewEducationDto(Education education)
-        {
-            return new NewEducationDto
-            {
-                Guid = education.Guid,
-                UniversityGuid = education.UniversityGuid,
-                Major = education.Major,
-                Degree = education.Degree,
-                GPA = education.GPA,
-            };
-        }
     }
 }

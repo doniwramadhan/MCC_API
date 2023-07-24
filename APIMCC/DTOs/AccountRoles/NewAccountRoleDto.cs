@@ -18,14 +18,5 @@ namespace APIMCC.DTOs.AccountRoles
                 ModifiedDate = DateTime.Now
             };
         }
-
-        public static explicit operator NewAccountRoleDto(AccountRole accountRole)
-        {
-            return new NewAccountRoleDto
-            {
-                AccountGuid = accountRole.AccountGuid,
-                RoleGuid = accountRole.RoleGuid,
-            };
-        }
     }
 }

@@ -1,24 +1,19 @@
-﻿using APIMCC.Contracts;
-using APIMCC.DTOs.Universities;
-using APIMCC.Models;
+﻿using APIMCC.DTOs.Universities;
 using FluentValidation;
 
 namespace APIMCC.Utilities.Validations.Universities
 {
-    public class NewUniversityValidator : AbstractValidator<NewUniversityDto>
+    public class UpdateUniversityValidator : AbstractValidator<UniversityDto>
     {
-        public NewUniversityValidator()
+        public UpdateUniversityValidator()
         {
-
             RuleFor(u => u.Code)
                 .NotNull()
                 .MaximumLength(5);
-                
-                
+
+
             RuleFor(u => u.Name)
                 .NotEmpty();
         }
-
-        
     }
 }

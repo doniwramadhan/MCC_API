@@ -18,13 +18,5 @@ namespace APIMCC.DTOs.Roles
 
             };
         }
-
-        public static explicit operator NewRoleDto(Role role)
-        {
-            return new NewRoleDto
-            {
-                Name = role.Name,
-            };
-        }
     }
 }
