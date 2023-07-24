@@ -7,6 +7,8 @@ namespace APIMCC.Repositories
 {
     public class UniversityRepository : GeneralRepository<University>, IUniversityRepository
     {
-        public UniversityRepository(BookingDbContext context) : base (context) { } 
+        public UniversityRepository(BookingDbContext context) : base (context) { }
+
+       
     }
 }

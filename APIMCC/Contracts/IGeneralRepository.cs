@@ -7,6 +7,6 @@
         TEntity? Create(TEntity entity);
         bool Update(TEntity entity);
         bool Delete(TEntity entity);
-        bool IsExist(Guid guid);
+        
     }
 }

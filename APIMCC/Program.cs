@@ -2,7 +2,10 @@ using APIMCC.Contracts;
 using APIMCC.Data;
 using APIMCC.Repositories;
 using APIMCC.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace APIMCC
 {
@@ -38,6 +41,10 @@ namespace APIMCC
             builder.Services.AddScoped<BookingService>();
             builder.Services.AddScoped<AccountService>();
             builder.Services.AddScoped<AccountRoleService>();
+
+            // Add FluentValidation
+            builder.Services.AddFluentValidationAutoValidation()
+                .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

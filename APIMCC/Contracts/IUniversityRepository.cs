@@ -4,5 +4,6 @@ namespace APIMCC.Contracts
 {
     public interface IUniversityRepository : IGeneralRepository<University>
     {
+       
     }
 }

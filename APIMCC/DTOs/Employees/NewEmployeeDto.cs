@@ -12,6 +12,7 @@ namespace APIMCC.DTOs.Employees
         public GenderLevel Gender { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public DateTime HireDate { get; set; }
 
         public static implicit operator Employee(NewEmployeeDto newEmployeeDto)
         {
@@ -25,6 +26,7 @@ namespace APIMCC.DTOs.Employees
                 Gender = newEmployeeDto.Gender,
                 Email = newEmployeeDto.Email,
                 PhoneNumber = newEmployeeDto.PhoneNumber,
+                HireDate = newEmployeeDto.HireDate,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
 
@@ -42,6 +44,7 @@ namespace APIMCC.DTOs.Employees
                 Gender = employee.Gender,
                 Email = employee.Email,
                 PhoneNumber = employee.PhoneNumber,
+                HireDate = employee.HireDate
 
             };
         }
