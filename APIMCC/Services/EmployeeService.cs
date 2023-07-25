@@ -54,16 +54,27 @@ namespace APIMCC.Services
             return (EmployeeDto) toCreate;
         }
 
-        public int Update(EmployeeDto employeeDto)
+        public int Update(UpdateEmployeeDto updateEmployeeDto)
         {
-            var emp = _employeeRepository.GetByGuid(employeeDto.Guid);
+
+            
+            var emp = _employeeRepository.GetByGuid(updateEmployeeDto.Guid);
             if (emp is null)
             {
                 return -1;
             }
-            Employee toUpdate = employeeDto;
-            toUpdate.CreatedDate = emp.CreatedDate;
-            var result = _employeeRepository.Update(toUpdate);
+
+            Employee getNikByGuid = updateEmployeeDto;
+
+            getNikByGuid.NIK = _employeeRepository.GetNikByGuid(updateEmployeeDto.Guid);
+            if (getNikByGuid is null)
+            {
+                return -1;
+            }
+            _employeeRepository.Update(getNikByGuid);
+
+            getNikByGuid.CreatedDate = emp.CreatedDate;
+            var result = _employeeRepository.Update(getNikByGuid);
 
             return result ? 1 : 0;
         }

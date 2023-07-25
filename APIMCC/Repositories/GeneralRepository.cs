@@ -42,6 +42,7 @@ namespace APIMCC.Repositories
         {
             try
             {
+                _context.ChangeTracker.Clear();
                 _context.Set<TEntity>().Update(entity);
                 _context.SaveChanges();
                 return true;

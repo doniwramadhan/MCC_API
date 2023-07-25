@@ -11,7 +11,7 @@ namespace APIMCC.Utilities.Validations.Universities
         {
 
             RuleFor(u => u.Code)
-                .NotNull()
+                .NotEmpty()
                 .MaximumLength(5);
                 
                 

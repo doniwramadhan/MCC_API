@@ -8,7 +8,7 @@ namespace APIMCC.Utilities.Validations.Universities
         public UpdateUniversityValidator()
         {
             RuleFor(u => u.Code)
-                .NotNull()
+                .NotEmpty()
                 .MaximumLength(5);
 
 

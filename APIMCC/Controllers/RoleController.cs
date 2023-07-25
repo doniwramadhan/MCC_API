@@ -1,9 +1,6 @@
-﻿using APIMCC.Contracts;
-using APIMCC.DTOs.Roles;
-using APIMCC.DTOs.Rooms;
-using APIMCC.Models;
+﻿using APIMCC.DTOs.Roles;
 using APIMCC.Services;
-using Microsoft.AspNetCore.Http;
+using APIMCC.Utilities.Handlers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIMCC.Controllers
@@ -26,11 +23,22 @@ namespace APIMCC.Controllers
             var result = _roleService.GetAll();
             if (result is null)
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<IEnumerable<RoleDto>>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Data is not found"
+                });
             }
             else
             {
-                return Ok(result);
+                return Ok(new ResponseHandler<IEnumerable<RoleDto>>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = "OK",
+                    Message = "Succes retrieve data",
+                    Data = result
+                });
             }
         }
 
@@ -40,11 +48,22 @@ namespace APIMCC.Controllers
             var result = _roleService.GetByGuid(guid);
             if (result is null)
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<RoleDto>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Data is not found"
+                });
             }
             else
             {
-                return Ok(result);
+                return Ok(new ResponseHandler<RoleDto>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = "OK",
+                    Message = "Succes retrieve data",
+                    Data = result
+                });
             }
         }
 
@@ -54,11 +73,22 @@ namespace APIMCC.Controllers
             var result = _roleService.Create(newRoleDto);
             if (result is null)
             {
-                return StatusCode(500, "Error from database");
+                return StatusCode(500, new ResponseHandler<NewRoleDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = "Error",
+                    Message = "Insert is failed"
+                });
             }
             else
             {
-                return Ok(result);
+                return Ok(new ResponseHandler<RoleDto>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = "OK",
+                    Message = "Succes insert data",
+                    Data = result
+                });
             }
         }
 
@@ -68,14 +98,29 @@ namespace APIMCC.Controllers
             var result = _roleService.Update(roleDto);
             if (result is 0)
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<RoleDto>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Data is not found"
+                });
             }
             if (result is -1)
             {
-                return StatusCode(500, "Error Retrieve from database");
+                return StatusCode(500, new ResponseHandler<RoleDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = "Error",
+                    Message = "Update is failed"
+                });
             }
 
-            return Ok("Update succes");
+            return Ok(new ResponseHandler<RoleDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = "OK",
+                Message = "Succes update data",
+            });
         }
 
         [HttpDelete]
@@ -84,14 +129,28 @@ namespace APIMCC.Controllers
             var result = _roleService.Delete(guid);
             if (result is 0)
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<RoleDto>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Data is not found"
+                });
             }
             if (result is -1)
             {
-                return StatusCode(500, "Error Retrieve from database");
+                return StatusCode(500, new ResponseHandler<RoleDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = "Error",
+                    Message = "Delete is failed"
+                });
             }
-
-            return Ok("Delete succes");
+            return Ok(new ResponseHandler<RoleDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = "OK",
+                Message = "Succes delete data",
+            });
         }
     }
 }

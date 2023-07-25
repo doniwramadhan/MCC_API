@@ -23,6 +23,12 @@ namespace APIMCC.Repositories
             return _context.Set<Employee>().ToList().LastOrDefault()?.NIK;
         }
 
+        public string GetNikByGuid(Guid guid)
+        {
+            Employee emp = _context.Set<Employee>().FirstOrDefault(e => e.Guid == guid);
+            return emp?.NIK ;
+        }
+
         
     }
 }
