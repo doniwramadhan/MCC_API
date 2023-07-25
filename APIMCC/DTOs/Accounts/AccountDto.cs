@@ -29,7 +29,7 @@ namespace APIMCC.DTOs.Accounts
             return new AccountDto
             {
                 Guid = account.Guid,
-                //Password= account.Password,
+                Password= account.Password,
                 OTP = account.OTP,
                 IsUsed = account.IsUsed,
                 ExpiredDate = account.ExpiredDate,

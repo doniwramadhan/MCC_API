@@ -7,5 +7,6 @@ namespace APIMCC.Contracts
         string? GetLastNik();
         string? GetNikByGuid(Guid guid);
         bool IsNotExist(string value);
+        Employee? GetByEmail(string email);
     }
 }

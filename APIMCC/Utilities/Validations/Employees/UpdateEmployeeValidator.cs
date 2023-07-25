@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace APIMCC.Utilities.Validations.Employees
 {
-    public class UpdateEmployeeValidator : AbstractValidator<EmployeeDto>
+    public class UpdateEmployeeValidator : AbstractValidator<UpdateEmployeeDto>
     {
         private readonly IEmployeeRepository _employeeRepository;
         public UpdateEmployeeValidator(IEmployeeRepository employeeRepository)

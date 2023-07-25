@@ -8,12 +8,30 @@ namespace APIMCC.Services
     public class AccountService
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IEmployeeRepository _employeeRepository;
 
-        public AccountService(IAccountRepository accountRepository)
+        public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository)
         {
             _accountRepository = accountRepository;
+            _employeeRepository = employeeRepository;
         }
 
+        public int Login(LoginDto loginDto)
+        {
+            var getEmployee = _employeeRepository.GetByEmail(loginDto.Email);
+            if(getEmployee == null)
+            {
+                return 0;
+            }
+
+            var getAccount = _accountRepository.GetByGuid(getEmployee.Guid);
+            if(getAccount.Password == loginDto.Password)
+            {
+                return 1;
+            }
+
+            return 0;
+        }
         public IEnumerable<AccountDto> GetAll()
         {
             var acc = _accountRepository.GetAll();

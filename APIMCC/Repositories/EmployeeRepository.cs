@@ -18,6 +18,8 @@ namespace APIMCC.Repositories
                 || e.PhoneNumber.Contains(value)) is null;
         }
 
+
+
         public string GetLastNik()
         {
             return _context.Set<Employee>().ToList().LastOrDefault()?.NIK;
@@ -29,6 +31,9 @@ namespace APIMCC.Repositories
             return emp?.NIK ;
         }
 
-        
+        public Employee? GetByEmail(string email)
+        {
+            return _context.Set<Employee>().SingleOrDefault(e => e.Email.Contains(email));
+        }
     }
 }
