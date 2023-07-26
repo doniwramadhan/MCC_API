@@ -86,6 +86,7 @@ namespace APIMCC.Controllers
                     Code = StatusCodes.Status200OK,
                     Status = "OK",
                     Message = "Succes insert data",
+                    Data = result
                     
                 });
             }

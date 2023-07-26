@@ -17,6 +17,30 @@ namespace APIMCC.Controllers
             _accountService = accountService;
         }
 
+        [HttpPost("register")]
+        public IActionResult Register(RegisterDto registerDto)
+        {
+            var result = _accountService.Register(registerDto);
+            if (result == null)
+            {
+                return StatusCode(500, new ResponseHandler<RegisterDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = "Error",
+                    Message = "Register is failed"
+                });
+            }
+
+            return Ok(new ResponseHandler<RegisterDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Register Success",
+                Data = result
+            });
+
+        }
+
         [HttpPost("login")]
         public IActionResult Login(LoginDto loginDto)
         {

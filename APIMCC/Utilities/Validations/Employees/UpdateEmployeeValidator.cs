@@ -26,14 +26,15 @@ namespace APIMCC.Utilities.Validations.Employees
 
             RuleFor(e => e.Email)
                 .NotEmpty().WithMessage("Email is required")
-                .EmailAddress().WithMessage("Email is not valid")
-                .Must(IsDuplicateValue).WithMessage("Email is already exist");
+                .EmailAddress().WithMessage("Email is not valid");
+
+
 
             RuleFor(e => e.PhoneNumber)
                 .NotEmpty()
                 .MaximumLength(20)
-                .Matches(@"^\+[0-9]+$").WithMessage("Format phone number using +62")
-                .Must(IsDuplicateValue).WithMessage("Phone number is already exist");
+                .Matches(@"^\+[0-9]+$").WithMessage("Format phone number using +62");
+                
         }
 
         private bool IsDuplicateValue(string arg)

@@ -1,7 +1,9 @@
 ﻿using APIMCC.Contracts;
 using APIMCC.DTOs.Accounts;
 using APIMCC.DTOs.Bookings;
+using APIMCC.DTOs.Employees;
 using APIMCC.Models;
+using APIMCC.Utilities.Handlers;
 
 namespace APIMCC.Services
 {
@@ -9,13 +11,35 @@ namespace APIMCC.Services
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IEducationRepository _educationRepository;
+        private readonly IUniversityRepository _universityRepository;
 
-        public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository)
+        public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEducationRepository educationRepository, 
+            IUniversityRepository universityRepository)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
+            _educationRepository = educationRepository;
+            _universityRepository = universityRepository;
         }
 
+        public RegisterDto? Register(RegisterDto registerDto)
+        {
+            Employee toCreate = registerDto;
+            toCreate.NIK = GenerateNIK.Nik(_employeeRepository.GetLastNik());
+
+            var createAccount = _employeeRepository.Create(toCreate);
+            if (createAccount is null)
+            {
+                return null;
+            }
+            _educationRepository.Create(registerDto);
+            _universityRepository.Create(registerDto);
+            _accountRepository.Create(registerDto);
+            
+
+            return registerDto;
+        }
         public int Login(LoginDto loginDto)
         {
             var getEmployee = _employeeRepository.GetByEmail(loginDto.Email);
