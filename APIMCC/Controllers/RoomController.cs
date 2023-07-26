@@ -16,6 +16,30 @@ namespace APIMCC.Controllers
             _roomService = roomService;
         }
 
+        [HttpGet("booked-room")]
+        public IActionResult GetBookedRoom()
+        {
+            var result = _roomService.GetRoom();
+            if (result is null)
+            {
+                return NotFound(new ResponseHandler<IEnumerable<BookedRoomDto>>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Data is not found"
+                });
+            }
+            else
+            {
+                return Ok(new ResponseHandler<IEnumerable<BookedRoomDto>>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = "OK",
+                    Message = "Succes retrieve data",
+                    Data = result
+                });
+            }
+        }
 
         [HttpGet]
         public IActionResult GetAll()

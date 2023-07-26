@@ -16,6 +16,56 @@ namespace APIMCC.Controllers
             _employeeService = employeeService;
         }
 
+        [HttpGet("master")]
+        public IActionResult GetMaster()
+        {
+            var result = _employeeService.GetAllEmployeeDetail();
+            if (result is null)
+            {
+                return NotFound(new ResponseHandler<IEnumerable<MasterEmployeeDto>>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Data is not found"
+                });
+            }
+            else
+            {
+                return Ok(new ResponseHandler<IEnumerable<MasterEmployeeDto>>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = "OK",
+                    Message = "Succes retrieve data",
+                    Data = result
+                });
+            }
+        }
+
+        [HttpGet("master/{guid}")]
+        public IActionResult GetMasterByGuid(Guid guid)
+        {
+            var result = _employeeService.GetAllEmployeeByGuid(guid);
+            if (result is null)
+            {
+                return NotFound(new ResponseHandler<MasterEmployeeDto>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Data is not found"
+                });
+            }
+            else
+            {
+                return Ok(new ResponseHandler<MasterEmployeeDto>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = "OK",
+                    Message = "Succes retrieve data",
+                    Data = result
+                });
+            }
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {

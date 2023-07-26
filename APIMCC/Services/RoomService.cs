@@ -8,12 +8,45 @@ namespace APIMCC.Services
     public class RoomService
     {
         private readonly IRoomRepository _roomRepository;
-
-        public RoomService(IRoomRepository roomRepository)
+        private readonly IBookingRepository _bookingRepository;
+        private readonly IEmployeeRepository _employeeRepository;
+        public RoomService(IRoomRepository roomRepository, IBookingRepository bookingRepository, IEmployeeRepository employeeRepository)
         {
             _roomRepository = roomRepository;
+            _bookingRepository = bookingRepository;
+            _employeeRepository = employeeRepository;
         }
 
+        public IEnumerable<BookedRoomDto> GetRoom()
+        {
+            var today = DateTime.Today.ToString("dd-MM-yyyy");
+            var book = _bookingRepository.GetAll().Where(b => b.StartDate.ToString("dd-MM-yyyy").Equals(today));
+            
+            if(!book.Any())
+            {
+                return null;
+            }
+
+            var bookToday = new List<BookedRoomDto>();
+
+            foreach( var booking in book)
+            {
+                var employee = _employeeRepository.GetByGuid(booking.EmployeeGuid);
+                var room = _roomRepository.GetByGuid(booking.RoomGuid);
+
+                BookedRoomDto bookedRoomDto = new BookedRoomDto
+                {
+                    BookingGuid = booking.Guid,
+                    RoomName = room.Name,
+                    Status = booking.Status,
+                    Floor = room.Floor,
+                    BookedBy = employee.FirstName +" "+employee.LastName
+                };
+
+                bookToday.Add(bookedRoomDto);
+            }
+            return bookToday;
+        }
 
         public IEnumerable<RoomsDto> GetAll()
         {
