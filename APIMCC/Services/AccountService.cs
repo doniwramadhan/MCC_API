@@ -23,6 +23,79 @@ namespace APIMCC.Services
             _universityRepository = universityRepository;
         }
 
+        public int ForgotPasswordDto(ForgotPasswordDto forgotPasswordDto)
+        {
+            var emp = _employeeRepository.GetByEmail(forgotPasswordDto.Email);
+            if (emp is null)
+            {
+                return 0;
+            }
+            var acc = _accountRepository.GetByGuid(emp.Guid);
+            if(acc is null)
+            {
+                return -1;
+            }
+            var otp = new Random().Next(111111, 999999);
+            var isUpdated = _accountRepository.Update(new Account
+            {
+                Guid = acc.Guid,
+                Password = acc.Password,
+                ExpiredDate = DateTime.Now.AddMinutes(5),
+                OTP = otp,
+                IsUsed = false,
+                CreatedDate = acc.CreatedDate,
+                ModifiedDate = DateTime.Now
+            });
+
+            if(!isUpdated)
+            {
+                return -1;
+            }
+
+            forgotPasswordDto.Email = $"{otp}";
+            return 1;
+        }
+        
+        //
+        //  Change Password
+        //
+        public int ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var isExist = _employeeRepository.GetByEmail(changePasswordDto.Email);
+            if(isExist is null)
+            {
+                return -1;
+            }
+            var getAcc = _accountRepository.GetByGuid(isExist.Guid);
+            var acc = new Account
+            {
+                Guid = getAcc.Guid,
+                IsUsed = true,
+                ModifiedDate = DateTime.Now,
+                CreatedDate = getAcc.CreatedDate,
+                OTP = getAcc.OTP,
+                ExpiredDate = getAcc.ExpiredDate,
+                Password = changePasswordDto.NewPassword
+            };
+            if(getAcc.OTP != changePasswordDto.OTP)
+            {
+                return 0;
+            }
+            if(getAcc.IsUsed == true)
+            {
+                return 1;
+            }
+            if(getAcc.ExpiredDate < DateTime.Now)
+            {
+                return 2;
+            }
+            var isUpdated = _accountRepository.Update(acc);
+            if (!isUpdated)
+            {
+                return 0;
+            }
+            return 3;
+        }
         public RegisterDto? Register(RegisterDto registerDto)
         {
             Employee toCreate = registerDto;

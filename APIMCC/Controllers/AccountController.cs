@@ -63,6 +63,89 @@ namespace APIMCC.Controllers
             });
         }
 
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        {
+            var isUpdated = _accountService.ForgotPasswordDto(forgotPasswordDto);
+            if(isUpdated is 0)
+            {
+                return NotFound(new ResponseHandler<ForgotPasswordDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Email is not found"
+                });
+            }
+
+            if(isUpdated is -1)
+            {
+                return StatusCode(500, new ResponseHandler<ForgotPasswordDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = "Error",
+                    Message = "Error from database"
+                });
+            }
+            return Ok(new ResponseHandler<ForgotPasswordDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = "OK",
+                Message = "Succes retrieve data",
+                Data = forgotPasswordDto
+            });
+
+        }
+
+        [HttpPost("change-password")]
+        public IActionResult ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var update = _accountService.ChangePassword(changePasswordDto);
+            if(update is -1)
+            {
+                return NotFound(new ResponseHandler<ChangePasswordDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Email is not found"
+                });
+            }
+            if(update is 0)
+            {
+                return NotFound(new ResponseHandler<ChangePasswordDto>
+                {
+                    Code = StatusCodes.Status406NotAcceptable,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Password is not match"
+                });
+            }
+            if(update is 1)
+            {
+                return NotFound(new ResponseHandler<ChangePasswordDto>
+                {
+                    Code = StatusCodes.Status403Forbidden,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "OTP is used"
+                });
+            }
+            if(update is 2)
+            {
+                return NotFound(new ResponseHandler<ChangePasswordDto>
+                {
+                    Code = StatusCodes.Status419AuthenticationTimeout,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "OTP is expired"
+                });
+            }
+
+            return Ok(new ResponseHandler<ChangePasswordDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = "OK",
+                Message = "Succes retrieve data",
+                Data = changePasswordDto
+            });
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
