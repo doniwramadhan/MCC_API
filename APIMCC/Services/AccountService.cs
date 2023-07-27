@@ -32,34 +32,31 @@ namespace APIMCC.Services
         //
         public int ForgotPasswordDto(ForgotPasswordDto forgotPasswordDto)
         {
-            var emp = _employeeRepository.GetByEmail(forgotPasswordDto.Email);
-            if (emp is null)
-            {
-                return 0;
-            }
-            var acc = _accountRepository.GetByGuid(emp.Guid);
-            if(acc is null)
-            {
-                return -1;
-            }
+            var getAccountDetail = (from e in _employeeRepository.GetAll() 
+                                    join a in _accountRepository.GetAll() on e.Guid equals a.Guid
+                                    where e.Email == forgotPasswordDto.Email
+                                    select a).FirstOrDefault();
+
+
             var otp = new Random().Next(111111, 999999);
-            var isUpdated = _accountRepository.Update(new Account
+            var account = new Account
             {
-                Guid = acc.Guid,
-                Password = acc.Password,
+                Guid = getAccountDetail.Guid,
+                Password = getAccountDetail.Password,
                 ExpiredDate = DateTime.Now.AddMinutes(5),
                 OTP = otp,
                 IsUsed = false,
-                CreatedDate = acc.CreatedDate,
+                CreatedDate = getAccountDetail.CreatedDate,
                 ModifiedDate = DateTime.Now
-            });
+            };
 
+            var isUpdated = _accountRepository.Update(account);
+    
             if(!isUpdated)
             {
                 return -1;
             }
 
-            forgotPasswordDto.Email = $"{otp}";
             return 1;
         }
         
