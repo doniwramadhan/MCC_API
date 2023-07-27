@@ -21,72 +21,35 @@ namespace APIMCC.Services
 
         public IEnumerable<MasterEmployeeDto> GetAllEmployeeDetail()
         {
-            var employees = _employeeRepository.GetAll();
+            var employeesDetail = from employee in _employeeRepository.GetAll()
+                                  join education in _educationRepository.GetAll() on employee.Guid equals education.Guid
+                                  join university in _universityRepository.GetAll() on education.UniversityGuid equals university.Guid
+                                  select new MasterEmployeeDto
+                                  {
+                                      EmployeeGuid = employee.Guid,
+                                      NIK = employee.NIK,
+                                      FullName = employee.FirstName + " " + employee.LastName,
+                                      BirthDate = employee.BirthDate,
+                                      Gender = employee.Gender,
+                                      HireDate = employee.HireDate,
+                                      Email = employee.Email,
+                                      PhoneNumber = employee.PhoneNumber,
+                                      Major = education.Major,
+                                      Degree = education.Degree,
+                                      GPA = education.GPA,
+                                      UniversityName = university.Name
+                                  };
 
-            if (!employees.Any())
-            {
-                return Enumerable.Empty<MasterEmployeeDto>();
-            }
+            return employeesDetail;
 
-            var employeesDetailDto = new List<MasterEmployeeDto>();
-
-            foreach (var emp in employees)
-            {
-                var education = _educationRepository.GetByGuid(emp.Guid);
-                var university = _universityRepository.GetByGuid(education.UniversityGuid);
-
-                MasterEmployeeDto employeeDetail = new MasterEmployeeDto
-                {
-                    EmployeeGuid = emp.Guid,
-                    NIK = emp.NIK,
-                    FullName = emp.FirstName + " " + emp.LastName,
-                    BirthDate = emp.BirthDate,
-                    Gender = emp.Gender,
-                    HireDate = emp.HireDate,
-                    Email = emp.Email,
-                    PhoneNumber = emp.PhoneNumber,
-                    Major = education.Major,
-                    Degree = education.Degree,
-                    GPA = education.GPA,
-                    UniversityName = university.Name
-                };
-
-                employeesDetailDto.Add(employeeDetail);
-            };
-
-            return employeesDetailDto; // employeeDetail is found;
+            
         }
 
         public MasterEmployeeDto? GetAllEmployeeByGuid(Guid guid)
         {
-            var emp = _employeeRepository.GetByGuid(guid);
-
-            if(emp is null)
-            {
-                return null;
-            }
-            var employeesDetailDto = new List<MasterEmployeeDto>();
-
-            
-                var education = _educationRepository.GetByGuid(emp.Guid);
-                var university = _universityRepository.GetByGuid(education.UniversityGuid);
-
-                   return new MasterEmployeeDto
-                {
-                    EmployeeGuid = emp.Guid,
-                    NIK = emp.NIK,
-                    FullName = emp.FirstName + " " + emp.LastName,
-                    BirthDate = emp.BirthDate,
-                    Gender = emp.Gender,
-                    HireDate = emp.HireDate,
-                    Email = emp.Email,
-                    PhoneNumber = emp.PhoneNumber,
-                    Major = education.Major,
-                    Degree = education.Degree,
-                    GPA = education.GPA,
-                    UniversityName = university.Name
-                };         
+            return GetAllEmployeeDetail().SingleOrDefault(e => e.EmployeeGuid == guid);
         }
+
         public IEnumerable<EmployeeDto> GetAll()
         {
             var emp = _employeeRepository.GetAll();
