@@ -9,6 +9,11 @@ namespace APIMCC.Repositories
     {
         public UniversityRepository(BookingDbContext context) : base (context) { }
 
+        public University? GetByCode(string code)
+        {
+            return _context.Set<University>().SingleOrDefault(u => u.Code == code);
+        }
+
        
     }
 }

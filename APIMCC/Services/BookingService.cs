@@ -8,10 +8,36 @@ namespace APIMCC.Services
     public class BookingService
     {
         private readonly IBookingRepository _bookingRepository;
-
-        public BookingService(IBookingRepository bookingRepository)
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IRoomRepository _roomRepository;
+        public BookingService(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, IRoomRepository roomRepository)
         {
             _bookingRepository = bookingRepository;
+            _employeeRepository = employeeRepository;
+            _roomRepository = roomRepository;
+        }
+        public IEnumerable<DetailBookingDto> GetAllDetailBooking()
+        {
+            var getDetail = (from booking in _bookingRepository.GetAll()
+                             join room in _roomRepository.GetAll() on booking.RoomGuid equals room.Guid
+                             join emplooyee in _employeeRepository.GetAll() on booking.EmployeeGuid equals emplooyee.Guid
+                             select new DetailBookingDto
+                             {
+                                 BookingGuid = emplooyee.Guid,
+                                 BookedNik = emplooyee.NIK,
+                                 BookedBy = emplooyee.FirstName + " " + emplooyee.LastName,
+                                 RoomName = room.Name,
+                                 StartDate = booking.StartDate,
+                                 EndDate = booking.EndDate,
+                                 Status = booking.Status,
+                                 Remarks = booking.Remarks
+                             });
+            return getDetail;
+        }
+
+        public DetailBookingDto? GetAllDetailBookingByGuid(Guid guid)
+        {
+            return GetAllDetailBooking().SingleOrDefault(b => b.BookingGuid == guid);
         }
 
         public IEnumerable<BookingDto> GetAll()

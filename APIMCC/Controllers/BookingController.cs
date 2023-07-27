@@ -15,7 +15,54 @@ namespace APIMCC.Controllers
         {
             _bookingService = bookingService;
         }
-
+        [HttpGet("detail")]
+        public IActionResult GetBookingDetail()
+        {
+            var result = _bookingService.GetAllDetailBooking();
+            if (result is null)
+            {
+                return NotFound(new ResponseHandler<IEnumerable<DetailBookingDto>>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Data is not found"
+                });
+            }
+            else
+            {
+                return Ok(new ResponseHandler<IEnumerable<DetailBookingDto>>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = "OK",
+                    Message = "Succes retrieve data",
+                    Data = result
+                });
+            }
+        }
+        [HttpGet("detail/{guid}")]
+        public IActionResult GetBookingDetailByGuid(Guid guid)
+        {
+            var result = _bookingService.GetAllDetailBookingByGuid(guid);
+            if (result is null)
+            {
+                return NotFound(new ResponseHandler<DetailBookingDto>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Data is not found"
+                });
+            }
+            else
+            {
+                return Ok(new ResponseHandler<DetailBookingDto>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = "OK",
+                    Message = "Succes retrieve data",
+                    Data = result
+                });
+            }
+        }
         [HttpGet]
         public IActionResult GetAll()
         {
