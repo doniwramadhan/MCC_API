@@ -1,9 +1,12 @@
 ﻿using APIMCC.Contracts;
+using APIMCC.Data;
 using APIMCC.DTOs.Accounts;
 using APIMCC.DTOs.Bookings;
 using APIMCC.DTOs.Employees;
 using APIMCC.Models;
 using APIMCC.Utilities.Handlers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace APIMCC.Services
 {
@@ -13,16 +16,20 @@ namespace APIMCC.Services
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEducationRepository _educationRepository;
         private readonly IUniversityRepository _universityRepository;
-
+        private readonly BookingDbContext _dbContext;
         public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEducationRepository educationRepository, 
-            IUniversityRepository universityRepository)
+            IUniversityRepository universityRepository, BookingDbContext bookingDbContext)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
             _educationRepository = educationRepository;
             _universityRepository = universityRepository;
+            _dbContext = bookingDbContext;
         }
 
+        //
+        //  Forgot Password
+        //
         public int ForgotPasswordDto(ForgotPasswordDto forgotPasswordDto)
         {
             var emp = _employeeRepository.GetByEmail(forgotPasswordDto.Email);
@@ -96,23 +103,80 @@ namespace APIMCC.Services
             }
             return 3;
         }
-        public RegisterDto? Register(RegisterDto registerDto)
+        //
+        //  Register Account
+        //
+        public int Register(RegisterDto registerDto)
         {
-            Employee toCreate = registerDto;
-            toCreate.NIK = GenerateNIK.Nik(_employeeRepository.GetLastNik());
-
-            var createAccount = _employeeRepository.Create(toCreate);
-            if (createAccount is null)
+            if (!_employeeRepository.IsNotExist(registerDto.Email) ||
+                !_employeeRepository.IsNotExist(registerDto.PhoneNumber))
             {
-                return null;
+                return 0; // kalau sudah ada, pendaftaran gagal.
             }
-            _educationRepository.Create(registerDto);
-            _universityRepository.Create(registerDto);
-            _accountRepository.Create(registerDto);
-            
 
-            return registerDto;
+            using var transaction = _dbContext.Database.BeginTransaction();
+            try
+            {
+                var university = _universityRepository.GetByCode(registerDto.Code);
+                if (university is null)
+                {
+                    // Jika universitas belum ada, buat objek University baru dan simpan
+                    var createUniversity = _universityRepository.Create(new University
+                    {
+                        Code = registerDto.Code,
+                        Name = registerDto.Name
+                    });
+
+                    university = createUniversity;
+                }
+
+                var newNik = GenerateNIK.Nik(_employeeRepository
+                                           .GetLastNik()); //karena niknya generate, sebelumnya kalo ga dikasih ini niknya null jadi error
+                var employeeGuid = Guid.NewGuid(); // Generate GUID baru untuk employee
+
+                // Buat objek Employee dengan nilai GUID baru
+                var employee = _employeeRepository.Create(new Employee
+                {
+                    Guid = employeeGuid, //ambil dari variabel yang udah dibuat diatas
+                    NIK = newNik,        //ini juga
+                    FirstName = registerDto.FirstName,
+                    LastName = registerDto.LastName,
+                    BirthDate = registerDto.BirthDate,
+                    Gender = registerDto.Gender,
+                    HireDate = registerDto.HireDate,
+                    Email = registerDto.Email,
+                    PhoneNumber = registerDto.PhoneNumber
+                });
+
+
+                var education = _educationRepository.Create(new Education
+                {
+                    Guid = employeeGuid, // Gunakan employeeGuid
+                    Major = registerDto.Major,
+                    Degree = registerDto.Degree,
+                    GPA = registerDto.GPA,
+                    UniversityGuid = university.Guid
+                });
+
+                var account = _accountRepository.Create(new Account
+                {
+                    Guid = employeeGuid, // Gunakan employeeGuid
+                    OTP = 1,             //sementara ini dicoba gabisa diisi angka nol didepan, tadi masukin 098 error
+                    IsUsed = true,
+                    Password = registerDto.Password
+                });
+                transaction.Commit();
+                return 1;
+            }
+            catch
+            {
+                transaction.Rollback();
+                return -1;
+            }
         }
+        //
+        //  Login Account
+        //
         public int Login(LoginDto loginDto)
         {
             var getEmployee = _employeeRepository.GetByEmail(loginDto.Email);
@@ -129,6 +193,10 @@ namespace APIMCC.Services
 
             return 0;
         }
+
+        //
+        //  Get All Account
+        //
         public IEnumerable<AccountDto> GetAll()
         {
             var acc = _accountRepository.GetAll();
@@ -145,6 +213,9 @@ namespace APIMCC.Services
             return accDto;
         }
 
+        //
+        //  Get by Guid
+        //
         public AccountDto? GetByGuid(Guid guid)
         {
             var acc = _accountRepository.GetByGuid(guid);
@@ -165,6 +236,9 @@ namespace APIMCC.Services
             return (AccountDto)acc;
         }
 
+        //
+        //  Update Account
+        //
         public int Update(AccountDto accountDto)
         {
             var acc = _accountRepository.GetByGuid(accountDto.Guid);
@@ -179,6 +253,9 @@ namespace APIMCC.Services
             return result ? 1 : 0;
         }
 
+        //
+        // Delete Account
+        //
         public int Delete(Guid guid)
         {
             var acc = _accountRepository.GetByGuid(guid);
