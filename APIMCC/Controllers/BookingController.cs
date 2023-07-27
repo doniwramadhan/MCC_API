@@ -1,7 +1,9 @@
 ﻿using APIMCC.DTOs.Bookings;
+using APIMCC.DTOs.Rooms;
 using APIMCC.Services;
 using APIMCC.Utilities.Handlers;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace APIMCC.Controllers
 {
@@ -15,6 +17,59 @@ namespace APIMCC.Controllers
         {
             _bookingService = bookingService;
         }
+
+
+
+        [HttpGet("length")]
+        public IActionResult GetBookLenght()
+        {
+            var result = _bookingService.GetBookingLength();
+            if (!result.Any())
+            {
+                return NotFound(new ResponseHandler<BookingLengthDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Room not found"
+                });
+            }
+
+            return Ok(
+                new ResponseHandler<IEnumerable<BookingLengthDto>>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = HttpStatusCode.OK.ToString(),
+                    Message = "Success retrieving data",
+                    Data = result
+                });
+        }
+
+
+
+        [HttpGet("free-room")]
+        public IActionResult GetFreeRoomToday()
+        {
+            var result = _bookingService.GetFreeRoom();
+            if (result == null)
+            {
+                return NotFound(new ResponseHandler<IEnumerable<RoomsDto>>()
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = "Not Found",
+                    Message = "Room is not found"
+                });
+                
+            }
+            return Ok(new ResponseHandler<IEnumerable<RoomsDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = "OK",
+                Message = "Succes retrieve data",
+                Data = result
+            });
+
+        }
+
         [HttpGet("detail")]
         public IActionResult GetBookingDetail()
         {
@@ -28,8 +83,6 @@ namespace APIMCC.Controllers
                     Message = "Data is not found"
                 });
             }
-            else
-            {
                 return Ok(new ResponseHandler<IEnumerable<DetailBookingDto>>
                 {
                     Code = StatusCodes.Status200OK,
@@ -37,7 +90,7 @@ namespace APIMCC.Controllers
                     Message = "Succes retrieve data",
                     Data = result
                 });
-            }
+            
         }
         [HttpGet("detail/{guid}")]
         public IActionResult GetBookingDetailByGuid(Guid guid)

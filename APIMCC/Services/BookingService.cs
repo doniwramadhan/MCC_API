@@ -1,6 +1,7 @@
 ﻿using APIMCC.Contracts;
 using APIMCC.DTOs.Bookings;
 using APIMCC.DTOs.Educations;
+using APIMCC.DTOs.Rooms;
 using APIMCC.Models;
 
 namespace APIMCC.Services
@@ -16,6 +17,80 @@ namespace APIMCC.Services
             _employeeRepository = employeeRepository;
             _roomRepository = roomRepository;
         }
+
+        public IEnumerable<BookingLengthDto> GetBookingLength()
+        {
+            List<BookingLengthDto> listBookingLength = new List<BookingLengthDto>();
+            var timeSpan = new TimeSpan();
+            var bookings = GetAll();
+            foreach (var booking in bookings)
+            {
+                var currentDate = booking.StartDate;
+                var endDate = booking.EndDate;
+
+                while (currentDate.Date <= endDate.Date)
+                {
+                    // Memeriksa apakah hari saat ini adalah Sabtu atau Minggu
+                    if (currentDate.DayOfWeek != DayOfWeek.Saturday && currentDate.DayOfWeek != DayOfWeek.Sunday)
+                    {
+                        if (currentDate.Date == endDate.Date)
+                        {
+                            // Hari terakhir, menghitung sisa jam penyewaan
+                            TimeSpan lastDay = currentDate - endDate;
+                            timeSpan += lastDay;
+                        }
+                        else
+                        {
+                            // Hari kerja, menghitung waktu kerja dengan memperhitungkan jam
+                            DateTime openRoom = currentDate.Date.AddHours(9); // Misalnya, waktu kerja dimulai pada pukul 09:00
+                            DateTime closeRoom = currentDate.Date.AddHours(17).AddMinutes(30); // Misalnya, waktu kerja selesai pada pukul 17:30
+
+                            TimeSpan dayTime = closeRoom - openRoom;
+                            timeSpan += dayTime;
+                        }
+                    }
+                    currentDate = currentDate.AddDays(1); // Pindah ke hari berikutnya
+                }
+
+                var room = _roomRepository.GetByGuid(booking.RoomGuid);
+
+                var bookingLengthDto = new BookingLengthDto()
+                {
+                    RoomGuid = booking.RoomGuid,
+                    RoomName = room.Name,
+                    BookingLength = timeSpan.TotalHours
+                };
+                listBookingLength.Add(bookingLengthDto);
+            }
+
+            if (!listBookingLength.Any())
+            {
+                return null;
+            }
+
+            return listBookingLength;
+        }
+
+        public IEnumerable<RoomsDto> GetFreeRoom()
+        {
+            var roomBooking = from room in _roomRepository.GetAll()
+                              join booking in GetAll() on room.Guid equals booking.Guid into bookingGroup
+                              from booking in bookingGroup.DefaultIfEmpty()
+                              where booking == null || booking.EndDate < DateTime.Now || booking.RoomGuid != room.Guid
+                              select new RoomsDto
+                              {
+                                  Guid = room.Guid,
+                                  Name = room.Name,
+                                  Capacity = room.Capacity,
+                                  Floor = room.Floor
+                              };
+            if (!roomBooking.Any())
+            {
+                return null;
+            }
+
+            return roomBooking;
+        }
         public IEnumerable<DetailBookingDto> GetAllDetailBooking()
         {
             var getDetail = (from booking in _bookingRepository.GetAll()
@@ -23,7 +98,7 @@ namespace APIMCC.Services
                              join emplooyee in _employeeRepository.GetAll() on booking.EmployeeGuid equals emplooyee.Guid
                              select new DetailBookingDto
                              {
-                                 BookingGuid = emplooyee.Guid,
+                                 BookingGuid = booking.Guid,
                                  BookedNik = emplooyee.NIK,
                                  BookedBy = emplooyee.FirstName + " " + emplooyee.LastName,
                                  RoomName = room.Name,
