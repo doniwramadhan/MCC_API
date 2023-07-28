@@ -2,9 +2,12 @@ using APIMCC.Contracts;
 using APIMCC.Data;
 using APIMCC.Repositories;
 using APIMCC.Services;
+using APIMCC.Utilities.Handlers;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Reflection;
 
 namespace APIMCC
@@ -16,8 +19,29 @@ namespace APIMCC
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = _context =>
+                    {
+                        var errors = _context.ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(v => v.ErrorMessage);
 
+                        return new BadRequestObjectResult(new ResponseHandlerValidator
+                        {
+                            Code = StatusCodes.Status400BadRequest,
+                            Status = HttpStatusCode.BadRequest.ToString(),
+                            Message = "Validation Error",
+                            Errors = errors.ToArray()
+                        });
+                    };
+                });
+        
+            //Add SmtpClient to container.
+            builder.Services.AddTransient<IEmailHandler,EmailHandler>(_ => new EmailHandler(builder.Configuration["EmailService:SmtpServer"],
+                int.Parse(builder.Configuration["EmailService:SmtpPort"]), builder.Configuration["EmailService:FromEmailAddress"]
+                ));
             //Add DbContext to container.
             var connection = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<BookingDbContext>(option => option.UseSqlServer(connection));

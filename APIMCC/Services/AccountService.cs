@@ -16,15 +16,17 @@ namespace APIMCC.Services
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEducationRepository _educationRepository;
         private readonly IUniversityRepository _universityRepository;
+        private readonly IEmailHandler _emailHandler;
         private readonly BookingDbContext _dbContext;
-        public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEducationRepository educationRepository, 
-            IUniversityRepository universityRepository, BookingDbContext bookingDbContext)
+        public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEducationRepository educationRepository,
+            IUniversityRepository universityRepository, BookingDbContext bookingDbContext, IEmailHandler emailHandler)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
             _educationRepository = educationRepository;
             _universityRepository = universityRepository;
             _dbContext = bookingDbContext;
+            _emailHandler = emailHandler;
         }
 
         //
@@ -49,10 +51,11 @@ namespace APIMCC.Services
                 CreatedDate = getAccountDetail.CreatedDate,
                 ModifiedDate = DateTime.Now
             };
+            
 
             var isUpdated = _accountRepository.Update(account);
-    
-            if(!isUpdated)
+            _emailHandler.SendEmail(forgotPasswordDto.Email, "OTP", $"{otp}");
+            if (!isUpdated)
             {
                 return -1;
             }
