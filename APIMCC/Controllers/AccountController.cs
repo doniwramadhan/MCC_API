@@ -34,8 +34,9 @@ namespace APIMCC.Controllers
             return Ok(new ResponseHandler<RegisterDto>
             {
                 Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Register Success",
+                Status = "OK",
+                Message = "Succes insert data",
+                
             });
 
         }

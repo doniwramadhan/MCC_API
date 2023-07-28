@@ -79,7 +79,7 @@ namespace APIMCC.Services
                 CreatedDate = getAcc.CreatedDate,
                 OTP = getAcc.OTP,
                 ExpiredDate = getAcc.ExpiredDate,
-                Password = changePasswordDto.NewPassword
+                Password = HashHandler.GenerateHash(changePasswordDto.NewPassword)
             };
             if(getAcc.OTP != changePasswordDto.OTP)
             {
@@ -120,8 +120,12 @@ namespace APIMCC.Services
                     // Jika universitas belum ada, buat objek University baru dan simpan
                     var createUniversity = _universityRepository.Create(new University
                     {
+                        Guid = new Guid(),
                         Code = registerDto.Code,
-                        Name = registerDto.Name
+                        Name = registerDto.Name,
+                        CreatedDate = DateTime.Now,
+                        ModifiedDate = DateTime.Now
+                        
                     });
 
                     university = createUniversity;
@@ -142,7 +146,9 @@ namespace APIMCC.Services
                     Gender = registerDto.Gender,
                     HireDate = registerDto.HireDate,
                     Email = registerDto.Email,
-                    PhoneNumber = registerDto.PhoneNumber
+                    PhoneNumber = registerDto.PhoneNumber,
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now
                 });
 
 
@@ -152,7 +158,9 @@ namespace APIMCC.Services
                     Major = registerDto.Major,
                     Degree = registerDto.Degree,
                     GPA = registerDto.GPA,
-                    UniversityGuid = university.Guid
+                    UniversityGuid = university.Guid,
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now
                 });
 
                 var account = _accountRepository.Create(new Account
@@ -160,7 +168,9 @@ namespace APIMCC.Services
                     Guid = employeeGuid, // Gunakan employeeGuid
                     OTP = 1,             //sementara ini dicoba gabisa diisi angka nol didepan, tadi masukin 098 error
                     IsUsed = true,
-                    Password = registerDto.Password
+                    Password = HashHandler.GenerateHash(registerDto.Password),
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now
                 });
                 transaction.Commit();
                 return 1;
@@ -183,7 +193,7 @@ namespace APIMCC.Services
             }
 
             var getAccount = _accountRepository.GetByGuid(getEmployee.Guid);
-            if(getAccount.Password == loginDto.Password)
+            if(HashHandler.ValidateHash(loginDto.Password, getAccount.Password))
             {
                 return 1;
             }
