@@ -7,6 +7,7 @@ using APIMCC.Models;
 using APIMCC.Utilities.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using System.Security.Claims;
 
 namespace APIMCC.Services
 {
@@ -18,8 +19,9 @@ namespace APIMCC.Services
         private readonly IUniversityRepository _universityRepository;
         private readonly IEmailHandler _emailHandler;
         private readonly BookingDbContext _dbContext;
+        private readonly ITokenHandler _tokenHandler;
         public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEducationRepository educationRepository,
-            IUniversityRepository universityRepository, BookingDbContext bookingDbContext, IEmailHandler emailHandler)
+            IUniversityRepository universityRepository, BookingDbContext bookingDbContext, IEmailHandler emailHandler, ITokenHandler tokenHandler)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
@@ -27,6 +29,7 @@ namespace APIMCC.Services
             _universityRepository = universityRepository;
             _dbContext = bookingDbContext;
             _emailHandler = emailHandler;
+            _tokenHandler = tokenHandler;
         }
 
         //
@@ -187,21 +190,36 @@ namespace APIMCC.Services
         //
         //  Login Account
         //
-        public int Login(LoginDto loginDto)
+        public string Login(LoginDto loginDto)
         {
             var getEmployee = _employeeRepository.GetByEmail(loginDto.Email);
             if(getEmployee == null)
             {
-                return 0;
+                return "-1";
             }
 
             var getAccount = _accountRepository.GetByGuid(getEmployee.Guid);
-            if(HashHandler.ValidateHash(loginDto.Password, getAccount.Password))
+            if(!HashHandler.ValidateHash(loginDto.Password, getAccount.Password))
             {
-                return 1;
+                return "-1";
             }
 
-            return 0;
+            
+            var claims = new List<Claim>
+            {
+                new Claim("Guid", getEmployee.Guid.ToString()),
+                new Claim("Fullname", $"{getEmployee.FirstName} {getEmployee.LastName}"),
+                new Claim("Email", getEmployee.Email)
+            };
+
+            var generateToken = _tokenHandler.GenerateToken(claims);
+
+            if(generateToken is null)
+            {
+                return "-2";
+            }
+
+            return generateToken;
         }
 
         //

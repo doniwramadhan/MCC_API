@@ -1,6 +1,7 @@
 ﻿using APIMCC.DTOs.Accounts;
 using APIMCC.Services;
 using APIMCC.Utilities.Handlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -8,6 +9,7 @@ namespace APIMCC.Controllers
 {
     [Route("api/accounts")]
     [ApiController]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private readonly AccountService _accountService;
@@ -18,6 +20,7 @@ namespace APIMCC.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public IActionResult Register(RegisterDto registerDto)
         {
             var result = _accountService.Register(registerDto);
@@ -42,10 +45,11 @@ namespace APIMCC.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public IActionResult Login(LoginDto loginDto)
         {
             var result = _accountService.Login(loginDto);
-            if(result is 0)
+            if(result is "-1")
             {
                 return NotFound(new ResponseHandler<LoginDto>
                 {
@@ -54,16 +58,30 @@ namespace APIMCC.Controllers
                     Message = "Email or Password is incorrect"
                 });
             }
+            if(result is "-2")
+            {
+                return StatusCode(500, new ResponseHandler<ForgotPasswordDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = "Error",
+                    Message = "Error from database"
+                });
+            }
 
-            return Ok(new ResponseHandler<LoginDto>
+            return Ok(new ResponseHandler<TokenDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
-                Message = "Login Success"
+                Message = "Login Success",
+                Data = new TokenDto
+                {
+                    Token = result
+                }
             });
         }
 
         [HttpPost("forgot-password")]
+        [AllowAnonymous]
         public IActionResult ForgotPassword(ForgotPasswordDto forgotPasswordDto)
         {
             var isUpdated = _accountService.ForgotPasswordDto(forgotPasswordDto);
@@ -97,6 +115,7 @@ namespace APIMCC.Controllers
         }
 
         [HttpPost("change-password")]
+        [AllowAnonymous]
         public IActionResult ChangePassword(ChangePasswordDto changePasswordDto)
         {
             var update = _accountService.ChangePassword(changePasswordDto);
