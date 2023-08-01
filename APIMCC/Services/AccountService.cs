@@ -1,5 +1,6 @@
 ﻿using APIMCC.Contracts;
 using APIMCC.Data;
+using APIMCC.DTOs.AccountRoles;
 using APIMCC.DTOs.Accounts;
 using APIMCC.DTOs.Bookings;
 using APIMCC.DTOs.Employees;
@@ -17,11 +18,12 @@ namespace APIMCC.Services
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEducationRepository _educationRepository;
         private readonly IUniversityRepository _universityRepository;
+        private readonly IAccountRoleRepository _accountRoleRepository;
         private readonly IEmailHandler _emailHandler;
         private readonly BookingDbContext _dbContext;
         private readonly ITokenHandler _tokenHandler;
         public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEducationRepository educationRepository,
-            IUniversityRepository universityRepository, BookingDbContext bookingDbContext, IEmailHandler emailHandler, ITokenHandler tokenHandler)
+            IUniversityRepository universityRepository, BookingDbContext bookingDbContext, IEmailHandler emailHandler, ITokenHandler tokenHandler, IAccountRoleRepository accountRoleRepository)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
@@ -30,6 +32,7 @@ namespace APIMCC.Services
             _dbContext = bookingDbContext;
             _emailHandler = emailHandler;
             _tokenHandler = tokenHandler;
+            _accountRoleRepository = accountRoleRepository;
         }
 
         //
@@ -176,8 +179,15 @@ namespace APIMCC.Services
                     IsUsed = true,
                     Password = HashHandler.GenerateHash(registerDto.Password),
                     CreatedDate = DateTime.Now,
-                    ModifiedDate = DateTime.Now
+                    ModifiedDate = DateTime.Now,
+                    ExpiredDate = DateTime.Now
                 });
+
+                //var accountRole = _accountRepository.Create(new NewAccountRoleDto
+                //{
+                //    AccountGuid = account.Guid,
+                //    RoleGuid = Guid.Parse("")
+                //});
                 transaction.Commit();
                 return 1;
             }
@@ -193,18 +203,16 @@ namespace APIMCC.Services
         public string Login(LoginDto loginDto)
         {
             var getEmployee = _employeeRepository.GetByEmail(loginDto.Email);
-            if(getEmployee == null)
+            var getRoles = _accountRoleRepository.GetRoleNamesByAccountGuid(getEmployee.Guid);
+            if (getEmployee == null)
             {
                 return "-1";
             }
-
             var getAccount = _accountRepository.GetByGuid(getEmployee.Guid);
             if(!HashHandler.ValidateHash(loginDto.Password, getAccount.Password))
             {
                 return "-1";
             }
-
-            
             var claims = new List<Claim>
             {
                 new Claim("Guid", getEmployee.Guid.ToString()),
@@ -212,9 +220,14 @@ namespace APIMCC.Services
                 new Claim("Email", getEmployee.Email)
             };
 
-            var generateToken = _tokenHandler.GenerateToken(claims);
 
-            if(generateToken is null)
+            foreach (var role in getRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var generateToken = _tokenHandler.GenerateToken(claims);
+            if (generateToken is null)
             {
                 return "-2";
             }

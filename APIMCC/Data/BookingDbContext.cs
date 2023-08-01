@@ -1,4 +1,5 @@
-﻿using APIMCC.Models;
+﻿using APIMCC.DTOs.Roles;
+using APIMCC.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIMCC.Data
@@ -22,7 +23,11 @@ namespace APIMCC.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            modelBuilder.Entity<Role>().HasData(new NewRoleDefaultDto
+            {
+                Guid = Guid.Parse("4887ec13-b482-47b3-9b24-08db91a71770"),
+                Name = "Employee"
+            });
             modelBuilder.Entity<Employee>().HasIndex(e => new
             {
                 e.NIK,
