@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIMCC", "APIMCC\APIMCC.csproj", "{445A3A59-5E9C-4824-B18E-FDE5818EEC02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIMCC", "APIMCC\APIMCC.csproj", "{445A3A59-5E9C-4824-B18E-FDE5818EEC02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{618069EA-9E13-4348-8B44-ED987BCEAD89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{445A3A59-5E9C-4824-B18E-FDE5818EEC02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{445A3A59-5E9C-4824-B18E-FDE5818EEC02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{445A3A59-5E9C-4824-B18E-FDE5818EEC02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{618069EA-9E13-4348-8B44-ED987BCEAD89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{618069EA-9E13-4348-8B44-ED987BCEAD89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{618069EA-9E13-4348-8B44-ED987BCEAD89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{618069EA-9E13-4348-8B44-ED987BCEAD89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
