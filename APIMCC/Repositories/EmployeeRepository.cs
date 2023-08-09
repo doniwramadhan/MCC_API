@@ -20,9 +20,15 @@ namespace APIMCC.Repositories
 
 
 
+        
         public string GetLastNik()
         {
-            return _context.Set<Employee>().ToList().LastOrDefault()?.NIK;
+            var employees = _context.Set<Employee>().ToList().LastOrDefault().NIK;
+            if (employees == null)
+            {
+                return "last NIK not found";
+            };
+            return employees;
         }
 
         public string GetNikByGuid(Guid guid)

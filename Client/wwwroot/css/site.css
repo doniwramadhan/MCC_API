@@ -8,10 +8,19 @@ html {
  
 }
 
+img {
+    display: block;
+    margin-right: 50px;
+    width: 50%;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
   }
+    .modal-dialog {
+        max-width: 800px; /* New width for default modal */
+    }
 }
 
 html {

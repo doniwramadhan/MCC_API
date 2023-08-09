@@ -9,10 +9,10 @@ namespace APIMCC.Utilities.Handlers
         {
             if (nik is null)
             {
-                return "1111";
+                return "11111";
             }
                 var generateNIK = int.Parse(nik)+1;
-                return generateNIK.ToString();
+                return generateNIK.ToString("D6");
         }
     }
 }

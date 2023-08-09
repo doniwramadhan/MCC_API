@@ -1,10 +1,10 @@
 ﻿@{
-    Layout = "_layoutBaru";
+    Layout = "_layoutAdmin";
 }
 
 
 
-<div class="header">
+@*<div class="header">
     <h1>Hello World</h1>
 </div>
 <div class="container">
@@ -38,4 +38,77 @@
     <button id="b1" class="btn btn-primary">Blue</button>
     <button id="b2" class="btn btn-danger">Red</button>
     <button id="b3" class="btn btn-success">Green</button>
+</div>*@
+
+<h1>Employee API</h1>
+<br />
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userModal">
+    Add Employee
+</button>
+<br />
+<table class="table table-striped" id="myTable">
+    <thead>
+        <tr>
+            
+            <th>NIK</th>
+            <th>Nick Name</th>
+            <th>Birth Date</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Employee</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="Enter First Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Enter Last Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="birthDate" class="form-label">Birth Date</label>
+                        <input type="date" class="form-control" id="birthDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-select" id="gender">
+                            <option value="0">Female</option>
+                            <option value="1">Male</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter Email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter Phone Number">
+                    </div>
+                    <div class="mb-3">
+                        <label for="hireDate" class="form-label">Hiring Date</label>
+                        <input type="date" class="form-control" id="hireDate">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="insertUser()">Save Data</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

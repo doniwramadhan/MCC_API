@@ -1,12 +1,14 @@
 ﻿using APIMCC.DTOs.Employees;
 using APIMCC.Services;
 using APIMCC.Utilities.Handlers;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIMCC.Controllers
 {
     [Route("api/employees")]
     [ApiController]
+    [EnableCors]
     public class EmployeeController : ControllerBase
     {
         private readonly EmployeeService _employeeService;

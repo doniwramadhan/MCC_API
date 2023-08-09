@@ -8,5 +8,15 @@ namespace Client.Controllers
         {
             return View();
         }
+
+        public IActionResult Chart()
+        {
+            return View();
+        }
+
+        public IActionResult AgeChart()
+        {
+            return View();
+        }
     }
 }
