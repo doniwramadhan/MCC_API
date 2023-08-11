@@ -1,11 +1,13 @@
 ﻿using APIMCC.DTOs.Employees;
 using APIMCC.Models;
 using Client.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
 
 namespace Client.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
 
