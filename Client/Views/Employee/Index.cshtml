@@ -2,19 +2,19 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "_layoutAdmin";
 }
+
+
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a href="employee/Create/">Create New</a>
 </p>
-<table class="table">
+<table class="table table-stripe" id="myTable1">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NIK)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
@@ -28,34 +28,21 @@
                 @Html.DisplayNameFor(model => model.Gender)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HireDate)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PhoneNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Guid)
+                Action
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModifiedDate)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.NIK)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
+                <a href="Employee/Details/">@Html.DisplayFor(modelItem => item.FirstName)</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LastName)
@@ -67,29 +54,34 @@
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.HireDate)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Guid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedDate)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    <form action="/Employee/Edit" method="get">
+                        <input type="hidden" value="@item.Guid" name="guid" />
+                        <input type="submit" value="Edit" class="btn btn-primary d-inline" onclick="return true" />
+                    </form>
+                    <form action="/Employee/Delete" method="post" onsubmit="return confirm('Are you sure want to delete this data?')">
+                        <input type="hidden" value="@item.Guid" name="guid" />
+                        <input type="submit" value="Delete" class="btn btn-danger" onclick="return true" />
+                    </form>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.success('@TempData["Success"]');
+    </script>
+}
+@section CSS{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+}

@@ -108,6 +108,23 @@ https://pokeapi.co/api/v2/
 //        }
 //    });
 //}
+//$(document).ready(function table1() {
+//    $('#myTable1').DataTable();
+//});
+
+$(document).ready(function () {
+    $('#myTable1').DataTable({
+        dom: 'Bfrtip',
+        buttons: ['colvis',
+            { extend: 'copy', exportOptions: { columns: ':visible' } },
+            { extend: 'csv', exportOptions: { columns: ':visible' } },
+            { extend: 'excel', exportOptions: { columns: ':visible' } },
+            { extend: 'pdf', exportOptions: { columns: ':visible' } },
+            { extend: 'print', exportOptions: { columns: ':visible' } }
+        ]
+    });
+});
+
 
 $(document).ready(function () {
     let table = new DataTable('#myTable', {
@@ -209,7 +226,7 @@ function deleteUser(userId) {
     });
 }
 
-$(document).ready(function () {
+$(document).ready(function genderChart() {
     // Memuat data menggunakan Ajax
     $.ajax({
         url: "https://localhost:7231/api/employees/"

@@ -13,6 +13,8 @@ namespace Client
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+
             var app = builder.Build();
 
 

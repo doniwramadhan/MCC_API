@@ -23,7 +23,7 @@ namespace APIMCC.Repositories
         
         public string GetLastNik()
         {
-            var employees = _context.Set<Employee>().ToList().LastOrDefault().NIK;
+            var employees = _context.Set<Employee>().OrderBy(e => e.NIK).ToList().LastOrDefault().NIK;
             if (employees == null)
             {
                 return "last NIK not found";
