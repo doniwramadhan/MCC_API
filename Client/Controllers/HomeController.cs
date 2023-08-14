@@ -28,5 +28,24 @@ namespace Client.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpGet("/Unauthorized")]
+        public IActionResult Unauthorized()
+        {
+            return View("401");
+        }
+
+        [HttpGet("/Forbidden")]
+        public IActionResult Forbidden()
+        {
+            return View("403");
+        }
+
+        [HttpGet("/NotFound")]
+        public IActionResult NotFound()
+        {
+            return View("404");
+        }
+
     }
 }

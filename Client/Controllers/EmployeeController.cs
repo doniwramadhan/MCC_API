@@ -7,7 +7,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace Client.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class EmployeeController : Controller
     {
 
